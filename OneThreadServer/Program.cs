@@ -27,6 +27,30 @@ namespace OneThreadServer
                     //Программа приостанавливается, ожидая входящее соединение
                     //сокет для обмена данными с клиентом
                     Socket s = sock.Accept();
+                    //сюда будут записаны данные от клиента
+                    string data = null;
+                    //Клиент есть, начинаем читать его запрос
+                    //массив полученных данных
+                    byte[] bytes = new byte[1024];
+                    //Длина полученных данных 
+                    int bytesCount = s.Receive(bytes);
+                    //Декодируем данные
+                    data += Encoding.UTF8.GetString(bytes, 0, bytesCount);
+                    //Показываем обработанные данные
+                    Console.WriteLine("Данные от клиента: " + data + "\n\n");
+                    //Генерируем ответ клиенту(размер в байтах его запроса)
+                    string reply = "Query size: " + data.Length.ToString() + " chars!!!";
+                    //Кодируем ответ сервера
+                    byte[] msg = Encoding.UTF8.GetBytes(reply);
+                    //Отправляем ответ сервера клиенту
+                    s.Send(msg);
+                    if(data.IndexOf("<TheEnd>")>-1)
+                    {
+                        Console.WriteLine("Соединение закрыто.");
+                        break;
+                    }
+                    s.Shutdown(SocketShutdown.Both);
+                    s.Close();
                 }
             }
         }
