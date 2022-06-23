@@ -53,6 +53,14 @@ namespace OneThreadServer
                     s.Close();
                 }
             }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Возникло необработанное исключение!\n" + ex.ToString());
+            }
+            finally
+            {
+                Console.ReadLine();
+            }
         }
     }
 }
